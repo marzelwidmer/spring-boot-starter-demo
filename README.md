@@ -1,20 +1,31 @@
-package ch.keepcalm.demo
+# Spring Boot Starter with Kotlin DSL Bean Definition
 
-import bar.BarService
-import foo.FooService
-import hello.HelloService
-import org.slf4j.LoggerFactory
-import org.springframework.boot.ApplicationRunner
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.support.beans
-import java.util.logging.Logger
+## Traditional Spring Bean Configuration
+Override the `starter` default Bean with the `Configurtion` class.
+```
+@Configuration
+class CustomHelloServiceConfiguration() {
 
-@SpringBootApplication
-class DemoApplication
+    /**
+     * Replaces the default HelloService provided by [HelloServiceAutoConfiguration].
+     */
+    @Bean
+    fun customHelloServices(): HelloService? {
+        // return object because HelloService is a interface
+        return object : HelloService {
+            override fun sayHello() {
+                Logger.getAnonymousLogger().info("---------------> CustomHelloService say hello from Logger!   <----------------")
+            }
+        }
+    }
+}
 
+```
+
+
+## Kotlin Bean DSL
+Override the `starter` default Bean with the `Kotlin Bean DSL`. 
+```
 fun main(args: Array<String>) {
     runApplication<DemoApplication>(*args) {
         addInitializers(
@@ -43,3 +54,5 @@ fun main(args: Array<String>) {
         )
     }
 }
+
+```
