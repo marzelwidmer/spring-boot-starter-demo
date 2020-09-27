@@ -1,6 +1,9 @@
 package ch.keepcalm.demo
 
+import bar.BarService
+import foo.FooService
 import hello.HelloService
+import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
@@ -16,34 +19,26 @@ fun main(args: Array<String>) {
     runApplication<DemoApplication>(*args) {
         addInitializers(
             beans {
-//                bean {
-//                    // Replaces the default HelloService provided by [HelloServiceAutoConfiguration].
-//                    HelloService {
-//                        LoggerFactory.getLogger(DemoApplication::class.java).info("Hello from Logger!")
-//                    }
-//                }
+                // Replaces the default FooService provided by starter.
+                bean<CustomerFooService>("FooService")
+
+                bean("customBarService") {
+                    CustomerBarService()
+                }
+
                 bean {
-                    ref<HelloService>().sayHello()
-                    ApplicationRunner { println(":::: ApplicationRunner :::: ") }
+                    ApplicationRunner {
+
+                        ref<FooService>().sayFoo()
+                        ref<HelloService>().sayHello()
+
+                        println(":::: ApplicationRunner :::: ")
+
+                        ref<BarService>().sayBye()
+
+                    }
                 }
             }
         )
-    }
-}
-
-@Configuration
-class HelloServiceConfig() {
-
-    /**
-     * Replaces the default HelloService provided by [HelloServiceAutoConfiguration].
-     */
-    @Bean
-    fun customHelloServices(): HelloService? {
-        // return object because HelloService is a interface
-        return object : HelloService {
-            override fun sayHello() {
-                Logger.getAnonymousLogger().info("Hello from Logger!")
-            }
-        }
     }
 }
