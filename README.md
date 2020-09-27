@@ -56,3 +56,31 @@ fun main(args: Array<String>) {
 }
 
 ```
+
+
+# Starter 
+## Configuration
+Default implementation with `ConditionalOnClass` and `ConditionalOnMissingBean`.
+```
+@Configuration
+@ConditionalOnClass(HelloService::class)
+class FooServiceAutoConfiguration {
+    @Bean
+    @ConditionalOnMissingBean
+    fun fooService(): FooService {
+        return FooServiceImpl()
+    }
+}
+```
+## Implementation
+```
+class FooServiceImpl : FooService{
+     override fun sayFoo() {
+        println("-----> Foo from starter <-----")
+    }
+}
+
+interface FooService {
+    fun sayFoo()
+}
+```
